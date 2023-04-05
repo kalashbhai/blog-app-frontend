@@ -1,0 +1,48 @@
+import axios from "axios";
+import {
+  FETCH_VIDEO_COURSES_REQUEST,
+  FETCH_VIDEO_COURSES_SUCCESS,
+  FETCH_VIDEO_COURSES_FAILURE,
+  DELETE_VIDEO_COURSE_REQUEST,
+  DELETE_VIDEO_COURSE_SUCCESS,
+  DELETE_VIDEO_COURSE_FAILURE,
+} from "../constants/videoConstants";
+
+export const fetchVideoCourses = () => async (dispatch) => {
+  try {
+    dispatch({ type: FETCH_VIDEO_COURSES_REQUEST });
+
+    const { data } = await axios.get("/api/videos");
+
+    dispatch({
+      type: FETCH_VIDEO_COURSES_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: FETCH_VIDEO_COURSES_FAILURE,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const deleteVideoCourse = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: DELETE_VIDEO_COURSE_REQUEST });
+
+    await axios.delete(`/api/videos/${id}`);
+
+    dispatch({ type: DELETE_VIDEO_COURSE_SUCCESS });
+  } catch (error) {
+    dispatch({
+      type: DELETE_VIDEO_COURSE_FAILURE,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
